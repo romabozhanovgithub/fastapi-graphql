@@ -1,0 +1,28 @@
+services:
+  web:
+    container_name: web
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=mysql+pymysql://root:root@db:3306/contacts
+      - HOST=0.0.0.0
+      - PORT=8000
+    volumes:
+      - .:/app
+    command: python app/main.py
+    depends_on:
+      - db
+
+  db:
+    container_name: db
+    image: mysql:5.7
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: contacts
+    volumes:
+      - ./db:/docker-entrypoint-initdb.d
